@@ -3,7 +3,7 @@ const boom = require('boom')
 
 // Get Data Models
 const Car = require('../models/Car')
-
+const sendType=require('../utils/sendType')
 // Get all cars
 exports.getCars = async (req, reply) => {
   try {
@@ -18,7 +18,7 @@ exports.getCars = async (req, reply) => {
         total:count
       }
     }
-    reply.send(data)
+     reply.send(sendType(data))
     })
   } catch (err) {
     throw boom.boomify(err)
@@ -30,7 +30,7 @@ exports.getSingleCar = async (req, reply) => {
   try {
     const id = req.query._id
     const car = await Car.findById(id)
-    return car
+    return sendType(car)
   } catch (err) {
     throw boom.boomify(err)
   }
@@ -40,7 +40,7 @@ exports.getSingleCar = async (req, reply) => {
 exports.addCar = async (req, reply) => {
   try {
     const car = new Car(req.body)
-    return car.save()
+    return sendType(car.save())
   } catch (err) {
     throw boom.boomify(err)
   }
@@ -52,7 +52,7 @@ exports.updateCar = async (req, reply) => {
     const car = req.body
     const { _id,...updateData } = car
     const update = await Car.findByIdAndUpdate(_id, updateData, { new: true })
-    return update
+    return sendType(update)
   } catch (err) {
     throw boom.boomify(err)
   }
@@ -63,7 +63,7 @@ exports.deleteCar = async (req, reply) => {
   try {
     const id = req.body.id
     const car = await Car.findByIdAndRemove(id)
-    return car
+    return sendType(car)
   } catch (err) {
     throw boom.boomify(err)
   }

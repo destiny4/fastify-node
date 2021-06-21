@@ -30,19 +30,29 @@ mongoose.connect('mongodb://localhost/mycargarage',{ useNewUrlParser: true ,useU
 
   fastify.addHook('onSend', (request, reply, payload, done) => {
     const err = null;
-    const retObj=JSON.parse(payload)
-    let newPayLoad=payload
-    if(retObj.error){
-      newPayLoad = payload.replace('message', 'msg')
-      newPayLoad = newPayLoad.replace('statusCode', 'code')
-    }
-    else{
-      const tmpObj={
-        code:0,
-        data:retObj,
-        msg:'OK'
+    try{
+      const retObj=JSON.parse(payload)
+      if(retObj.type==='busdata'){
+        let newPayLoad=payload.data
+        if(retObj.error){
+          newPayLoad = payload.replace('message', 'msg')
+          newPayLoad = newPayLoad.replace('statusCode', 'code')
+        }
+        else{
+          const tmpObj={
+            code:0,
+            data:retObj.data,
+            msg:'OK'
+          }
+          newPayLoad=JSON.stringify(tmpObj)
+        }
+        done(err, newPayLoad)
       }
-      newPayLoad=JSON.stringify(tmpObj)
+      else{
+        done(err, payload)
+      }
     }
-    done(err, newPayLoad)
+    catch(ex){
+      done(err, payload)
+    }
   })
