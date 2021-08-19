@@ -8,8 +8,9 @@ const sendType=require('../utils/sendType')
 exports.getCars = async (req, reply) => {
   try {
     const {pageSize,currentPage,query}=req.body
+    const current=currentPage>0?currentPage-1:0
     await Car.estimatedDocumentCount({},async (err,count)=>{
-    const rets = await Car.find(query).skip(currentPage*pageSize).limit(pageSize)
+    const rets = await Car.find(query).skip(current*pageSize).limit(pageSize)
     const data={
       list:rets,
       pagination:{
@@ -61,7 +62,7 @@ exports.updateCar = async (req, reply) => {
 // Delete a car
 exports.deleteCar = async (req, reply) => {
   try {
-    const id = req.body.id
+    const id = req.body._id
     const car = await Car.findByIdAndRemove(id)
     return sendType(car)
   } catch (err) {

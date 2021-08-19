@@ -18,9 +18,9 @@ mongoose.connect('mongodb://localhost/mycargarage',{ useNewUrlParser: true ,useU
 
   const start = async () => {
     try {
-      await fastify.listen(3000)
+      await fastify.listen(8000)
       fastify.swagger()
-      fastify.log.info(`server listening on ${fastify.server.address().port}`)
+      fastify.log.info(`document listening at http://${fastify.server.address().address}:${fastify.server.address().port}/documentation/`)
     } catch (err) {
       fastify.log.error(err)
       process.exit(1)
